@@ -3,15 +3,15 @@
     "collections": [
         {
             "name": "core",
-            "path": "C:\\dev\\Odin\\core"
+            "path": "/Users/bannertjul/Dev/Odin/core"
         },
         {
             "name": "vendor",
-            "path": "C:\\dev\\Odin\\vendor"
+            "path": "/Users/bannertjul/Dev/Odin/vendor"
         },
         {
             "name": "base",
-            "path": "C:\\dev\\Odin\\base"
+            "path": "/Users/bannertjul/Dev/Odin/base"
         }
     ],
     "checker_args": "-ignore-unknown-attributes -error-pos-style:unix",

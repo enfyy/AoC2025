@@ -1,9 +1,7 @@
 package aoc
 
-import "core:fmt"
 import "core:strings"
 import "core:strconv"
-// import "core:slice"
 
 //https://adventofcode.com/2025/day/1
 day1 :: proc(input: string) -> (part1: int, part2: int) {
