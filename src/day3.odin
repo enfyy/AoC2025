@@ -3,9 +3,8 @@ package aoc
 import "core:strings"
 import "core:unicode/utf8"
 import "core:strconv"
-import "core:math"
-import "core:fmt"
 
+//https://adventofcode.com/2025/day/3
 day3 :: proc(input: string) -> (part1: i64, part2: i64) {
     lines := input
     for line in strings.split_iterator(&lines, NEWLINE) {
@@ -15,7 +14,8 @@ day3 :: proc(input: string) -> (part1: i64, part2: i64) {
     return
 }
 
-calculate_joltage :: proc(bank: string, $digit_count: int) -> i64 {
+@(private = "file")
+calculate_joltage :: proc(bank: string, $digit_count: int) -> (result: i64) {
     assert(len(bank) >= digit_count, "not enough digits in the bank")
     digits: [digit_count]int
     offset := 0
@@ -34,9 +34,6 @@ calculate_joltage :: proc(bank: string, $digit_count: int) -> i64 {
         digits[i] = digit
         offset += digit_index + 1
     }
-    result := 0
-    for digit, i in digits {
-        result = result * 10 + digit
-    }
+    for digit, i in digits do result = result * 10 + i64(digit)
     return i64(result)
 }

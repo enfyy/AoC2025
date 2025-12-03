@@ -2,8 +2,8 @@ package aoc
 
 import "core:strings"
 import "core:strconv"
-import "core:fmt"
 
+//https://adventofcode.com/2025/day/2
 day2 :: proc(input: string) -> (part1: i64, part2: i64) {
     ranges := strings.split(input, ",")
     for range in ranges {
@@ -24,6 +24,7 @@ day2 :: proc(input: string) -> (part1: i64, part2: i64) {
     return
 }
 
+@(private = "file")
 check_valid_id_part1 :: proc(s: string) -> bool {
     if len(s) % 2 == 0 && s[:len(s) / 2] == s[len(s) / 2:] {
         return false
@@ -31,6 +32,7 @@ check_valid_id_part1 :: proc(s: string) -> bool {
     return true
 }
 
+@(private = "file")
 check_valid_id_part2 :: proc(s: string) -> bool {
     outer: for chunk_count in 2 ..= len(s) {
         if len(s) % chunk_count != 0 do continue
