@@ -8,8 +8,8 @@ import "core:os"
 import "core:mem"
 import "core:mem/virtual"
 
-procs := [?]Day_Proc{day1, day2}
-Day_Proc :: #type proc(_: string) -> (int, int)
+procs := [?]Day_Proc{day1, day2, day3}
+Day_Proc :: #type proc(_: string) -> (i64, i64)
 
 main :: proc() {
     mapped_inputs := map_inputs()

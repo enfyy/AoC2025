@@ -4,7 +4,7 @@ import "core:strings"
 import "core:strconv"
 import "core:fmt"
 
-day2 :: proc(input: string) -> (part1: int, part2: int) {
+day2 :: proc(input: string) -> (part1: i64, part2: i64) {
     ranges := strings.split(input, ",")
     for range in ranges {
         nums := strings.split(range, "-")
@@ -17,8 +17,8 @@ day2 :: proc(input: string) -> (part1: int, part2: int) {
         buffer: [16]byte
         for i in lower ..= upper {
             id := strconv.write_int(buffer[:], i64(i), 10)
-            if !check_valid_id_part1(id) do part1 += i
-            if !check_valid_id_part2(id) do part2 += i
+            if !check_valid_id_part1(id) do part1 += i64(i)
+            if !check_valid_id_part2(id) do part2 += i64(i)
         }
     }
     return
