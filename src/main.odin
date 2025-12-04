@@ -8,7 +8,7 @@ import "core:os"
 import "core:mem"
 import "core:mem/virtual"
 
-procs := [?]Day_Proc{day1, day2, day3}
+procs := [?]Day_Proc{day1, day2, day3, day4}
 Day_Proc :: #type proc(_: string) -> (i64, i64)
 
 main :: proc() {
@@ -85,4 +85,14 @@ read_args :: proc() -> (args: struct {
         if ok do args.day_index = day_index
     }
     return
+}
+
+// HELPERS ------
+
+oob :: #force_inline proc "contextless" (bounds: [2]int, pos: [2]int) -> bool {
+    return !is_in_bounds(bounds, pos)
+}
+
+is_in_bounds :: #force_inline proc "contextless" (bounds: [2]int, pos: [2]int) -> bool {
+    return pos.x >= 0 && pos.x < bounds.x && pos.y >= 0 && pos.y < bounds.y
 }
