@@ -4,8 +4,6 @@ import "core:strings"
 import "core:strconv"
 import "core:math"
 import "core:slice"
-import "core:fmt"
-import la "core:math/linalg"
 
 //https://adventofcode.com/2025/day/8
 day8 :: proc(input: string) -> (part1: i64, part2: i64) {
@@ -45,7 +43,6 @@ day8 :: proc(input: string) -> (part1: i64, part2: i64) {
 
     // connect circuits
     PAIRS_TO_CONNECT :: 1000
-    counts := make(map[int]int)
     assert(len(pairs) >= PAIRS_TO_CONNECT, "not enough pairs")
     for pair, i in pairs[:] {
         circ_id_a := circuits[pair.a_id] or_continue
@@ -73,7 +70,7 @@ day8 :: proc(input: string) -> (part1: i64, part2: i64) {
 
         // find part1 result
         if i == PAIRS_TO_CONNECT {
-            clear(&counts)
+            counts := make(map[int]int)
             for _, i in box_positions do counts[circuits[i]] += 1
 
             c, _ := slice.map_values(counts)
