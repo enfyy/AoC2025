@@ -1,5 +1,5 @@
 package aoc
-import "core:fmt"
+
 import "core:strings"
 
 @(private = "file")

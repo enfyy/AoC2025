@@ -1,12 +1,6 @@
 package aoc
 
 import "core:strings"
-import "core:strconv"
-import "core:fmt"
-
-day10 :: proc(input: string) -> (part1: i64, part2: i64) {
-    return
-}
 
 //https://adventofcode.com/2025/day/11
 day11 :: proc(input: string) -> (part1: i64, part2: i64) {
