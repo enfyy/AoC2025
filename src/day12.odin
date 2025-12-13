@@ -1,5 +1,6 @@
 package aoc
 
+import "core:container/intrusive/list"
 import "core:slice"
 import "core:strings"
 import "core:strconv"
@@ -8,11 +9,11 @@ import "core:fmt"
 //https://adventofcode.com/2025/day/12
 day12 :: proc(input: string) -> (part1: i64, part2: i64) {
     regions: [dynamic]Region
-    shapes: map[int]Shape
-
+    shapes := make(map[int]Shape)
+    id := 0
     lines := input
     for section in strings.split_iterator(&lines, DOUBLE_NEWLINE) {
-        split := strings.split(section, ":\n")
+        split := strings.split(section, fmt.tprintf(":%s", NEWLINE))
         if len(split) == 2 {
             index := strconv.parse_int(split[0]) or_continue
             shape: [dynamic][]bool
@@ -27,9 +28,12 @@ day12 :: proc(input: string) -> (part1: i64, part2: i64) {
                 append(&shape, shape_line[:])
             }
             shapes[index] = Shape {
-                parts = shape[:],
-                area  = area,
+                id           = id,
+                parts        = shape[:],
+                area         = area,
+                orientations = slice.unique_proc(make_all_orientations(shape[:]), shape_equal),
             }
+            id += 1
         } else {
             section := section
             for region_string in strings.split_iterator(&section, NEWLINE) {
@@ -37,12 +41,12 @@ day12 :: proc(input: string) -> (part1: i64, part2: i64) {
                 dimension_split := strings.split(split_again[0], "x")
                 x := strconv.parse_int(dimension_split[0]) or_continue
                 y := strconv.parse_int(dimension_split[1]) or_continue
-                indices: [dynamic]int
+                quantities: [dynamic]int
                 for index in strings.split_iterator(&split_again[1], " ") {
                     i := strconv.parse_int(index) or_continue
-                    append(&indices, i)
+                    append(&quantities, i)
                 }
-                append(&regions, Region{x = x, y = y, shape_quantities = indices[:]})
+                append(&regions, Region{x = x, y = y, shape_quantities = quantities[:]})
             }
         }
     }
@@ -50,20 +54,26 @@ day12 :: proc(input: string) -> (part1: i64, part2: i64) {
     pieces: [dynamic]Shape
     for region in regions {
         clear(&pieces)
-        space := region.x * region.y
-        total_space_required := 0
-        for q in region.shape_quantities {
-            s := shapes[q]
-            orientations := make_all_orientations(s.parts)
-            orientations = slice.unique_proc(orientations, shape_equal)
-            total_space_required += s.area
-
-            fmt.println(orientations)
+        total_required_space := 0
+        for q, i in region.shape_quantities {
+            shape := shapes[i]
+            for _ in 0 ..< q {
+                append(&pieces, shape)
+                total_required_space += shape.area
+            }
         }
-        if space < total_space_required do continue
-        slice.sort_by(pieces[:], proc(i, j: Shape) -> bool {return i.area < j.area})
+        region_size := (region.x * region.y)
+        if region_size < total_required_space do continue
+        if region.y < 3 || region.x < 3 do continue // pieces all happen to be that size at least
 
-        part1 += 1
+        // do they fit when we place them really genereously (each piece gets a 3x3)?
+        generous_size := (len(pieces) * 9)
+        if region_size >= generous_size {
+            part1 += 1
+            continue
+        } else {
+            fmt.println("lmao..", generous_size, region_size)
+        }
     }
     return
 }
@@ -76,8 +86,10 @@ Region :: struct {
 
 @(private = "file")
 Shape :: struct {
-    parts: [][]bool,
-    area:  int,
+    id:           int,
+    parts:        [][]bool,
+    area:         int,
+    orientations: [][][]bool,
 }
 
 @(private = "file")
@@ -112,14 +124,17 @@ flip_horizontal :: proc(grid: [][]$T, allocator := context.allocator) -> [][]T {
 make_all_orientations :: proc(grid: [][]$T, allocator := context.allocator) -> [][][]T {
     result: [dynamic][][]T
     append(&result, grid)
-    for i in 0 ..< 3 do append(&result, rotate90cw(result[len(result) - 1]))
+    for i in 0 ..< 4 do append(&result, rotate90cw(result[len(result) - 1]))
     append(&result, flip_horizontal(result[len(result) - 1]))
-    for i in 0 ..< 3 do append(&result, rotate90cw(result[len(result) - 1]))
+    for i in 0 ..< 4 do append(&result, rotate90cw(result[len(result) - 1]))
     return result[:]
 }
 
 @(private = "file")
 shape_equal :: proc(a, b: [][]bool) -> bool {
+    if len(a) != len(b) do return false
+    if len(a) == 0 do return true
+    if len(a[0]) != len(b[0]) do return false
     for row, y in a do for value, x in row do if b[y][x] != value do return false
     return true
 }
